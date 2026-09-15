@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to FX Regulation in Australia</title>
+    <style>
+        /* Mintegrity Brand Typography & Base Styles */
+        body {
+            font-family: 'Brandon Grotesque', Corbel, sans-serif;
+            background-color: #E9E9EA; /* Mintegrity Light Grey */
+            color: #001522; /* Mintegrity Black */
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        #app-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        /* Heading Styles based on Mintegrity Style Guide */
+        h1, h2 { 
+            color: #000F9F; /* Mintegrity Blue */
+            font-weight: 300; /* Light weight */
+            letter-spacing: 0.1em; /* Tracking added for headings */
+        }
+        h3 { 
+            color: #001522; /* Mintegrity Black */
+            font-weight: 500; /* Medium weight */
+            text-transform: uppercase; /* Sub-headings uppercase */
+        }
+        
+        /* Logo Styles & Safe Area */
+        .header-logo-container {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #CCCCCC;
+        }
+        .company-logo {
+            max-height: 60px;
+            /* 15px padding creates the required 25% safe area clear space around the 60px logo */
+            padding: 15px; 
+            max-width: 100%;
+        }
+
+        /* Fade-In Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: #CCCCCC; /* Mintegrity Mid Grey */
+            border-radius: 6px;
+            margin-bottom: 30px;
+            display: none;
+            height: 8px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #000F9F; /* Mintegrity Blue */
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        button {
+            background-color: #000F9F; /* Mintegrity Blue */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-family: 'Brandon Grotesque', Corbel, sans-serif;
+            letter-spacing: 0.05em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #78A2C3; /* Mintegrity Mid Blue */
+            color: #001522; /* Black text on lighter hover for contrast */
+            transform: translateY(-2px);
+        }
+        button.back-btn {
+            background-color: #CCCCCC; /* Mintegrity Mid Grey */
+            color: #001522; /* Mintegrity Black */
+        }
+        button.back-btn:hover {
+            background-color: #91C2DD; /* Mintegrity Light Blue */
+        }
+
+        /* Tabs (Module 1) */
+        .tab-header {
+            display: flex;
+            border-bottom: 2px solid #CCCCCC;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #001522;
+            font-weight: 500;
+            margin-top: 0;
+            border-radius: 0;
+        }
+        .tab-button:hover { 
+            background: none; 
+            color: #78A2C3; 
+            transform: none; 
+        }
+        .tab-button.active {
+            color: #000F9F;
+            border-bottom: 3px solid #000F9F;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: #E9E9EA;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #CCCCCC;
+            border-top: none;
+        }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+
+        /* Accordion (Module 5) */
+        .accordion {
+            background-color: #CCCCCC; /* Mintegrity Mid Grey */
+            color: #001522;
+            cursor: pointer;
+            padding: 15px 20px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: 0.3s;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .accordion:after { content: '\002B'; font-size: 20px; color: #000F9F; }
+        .accordion.active:after { content: "\2212"; }
+        .accordion.active, .accordion:hover { background-color: #91C2DD; /* Mintegrity Light Blue */ }
+        .panel {
+            padding: 0 20px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            border-left: 3px solid #000F9F;
+            margin-bottom: 10px;
+            border-radius: 0 0 6px 0;
+        }
+        .panel p { margin: 15px 0; }
+
+        /* Flashcards (Modules 2, 3, 4) */
+        .instruction-text {
+            font-size: 0.9em;
+            color: #78A2C3; /* Mintegrity Mid Blue */
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .flashcard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .flashcard {
+            background-color: transparent;
+            width: 100%;
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 8px;
+        }
+        .flashcard-front { 
+            background-color: #000F9F; /* Mintegrity Blue */
+            color: white; 
+            font-weight: 500; 
+            font-size: 1.1em; 
+        }
+        .flashcard-back { 
+            background-color: #E9E9EA; 
+            color: #001522; 
+            transform: rotateY(180deg); 
+            font-size: 0.95em; 
+            border: 2px solid #000F9F; 
+        }
+
+        /* Quiz Styles */
+        .quiz-option {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background: #CCCCCC; /* Mintegrity Mid Grey */
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .quiz-option:hover { background: #91C2DD; /* Mintegrity Light Blue */ }
+        .quiz-option input { margin-right: 10px; }
+        .feedback { margin-top: 15px; padding: 15px; border-radius: 6px; display: none; font-weight: 500; }
+        .feedback.correct { background-color: #d4edda; color: #155724; display: block; border-left: 4px solid #28a745; }
+        .feedback.incorrect { background-color: #f8d7da; color: #721c24; display: block; border-left: 4px solid #dc3545; }
+        
+        .footer-notes { font-size: 12px; margin-top: 40px; color: #001522; border-top: 1px solid #CCCCCC; padding-top: 15px; }
+        .quote { font-style: italic; border-left: 4px solid #000F9F; padding-left: 15px; margin: 20px 0; color: #001522; background: #E9E9EA; padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    
+    <!-- PERSISTENT HEADER LOGO -->
+    <div class="header-logo-container">
+        <!-- Ensure this file is saved as 'logo.png' in your GitHub repo -->
+        <img src="../mi_logo.png" alt="Mintegrity Logo" class="company-logo">
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-container" id="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- LAUNCH PAGE -->
+    <div id="screen-launch" class="screen active fade-in">
+        <h1 class="fade-in">Welcome to Introduction to FX Regulation in Australia</h1>
+        
+        <p class="fade-in">This course consists of 5 separate micro lessons that can be completed at different times for your convenience. You must complete all micro-modules and pass a final test before you will be issued with a certificate of completion.</p>
+        <p class="fade-in"><strong>Duration:</strong> 30 minutes</p>
+        
+        <h3 class="fade-in">What you can expect to learn:</h3>
+        <ul class="fade-in">
+            <li>An overview of Australian regulators</li>
+            <li>A summary of regulators concerns and focus</li>
+            <li>Key regulatory documents & examples of outcomes</li>
+            <li>A summary of key prohibitions and obligations</li>
+            <li>The distinction between Retail and Wholesale</li>
+        </ul>
+
+        <button class="fade-in" onclick="nextScreen('screen-mod1')">LAUNCH COURSE</button>
+
+        <div class="footer-notes fade-in">
+            <p><strong>Copyright:</strong> Copyright © MIWize. All rights reserved.</p>
+            <p><strong>Disclaimer:</strong> This e-learning content should be used as a guide only and is not meant to replace any specific advice from your employer.</p>
+        </div>
+    </div>
+
+    <!-- MODULE 1 (TABS FEATURE) -->
+    <div id="screen-mod1" class="screen">
+        <h2 class="fade-in">MICRO-MODULE 1: Overview of Australian FX Market Regulation</h2>
+        
+        <p class="fade-in">There are three main regulators which oversee aspects of FX trading and the FX market in Australia. Click the tabs below to learn about each one:</p>
+        
+        <div class="fade-in">
+            <div class="tab-header">
+                <button class="tab-button active" onclick="openTab(event, 'tab-asic')">ASIC</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-rba')">RBA</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-austrac')">AUSTRAC</button>
+            </div>
+            
+            <div id="tab-asic" class="tab-content active">
+                <strong>Australian Securities and Investments Commission</strong><br>
+                ASIC is Australia’s markets and financial services conduct regulator. Generally, participants who advise, deal, or make a market in financial products need to operate under an Australian Financial Services Licence (AFSL).
+            </div>
+            
+            <div id="tab-rba" class="tab-content">
+                <strong>Reserve Bank of Australia</strong><br>
+                The central bank of Australia has a market-wide focus on the stability of the financial system, with a particular connection to the FX market.
+            </div>
+            
+            <div id="tab-austrac" class="tab-content">
+                <strong>Australian Transaction Reports and Analysis Centre</strong><br>
+                Australia’s financial intelligence agency with regulatory responsibility for anti-money laundering, counter-terrorism financing and financial transaction reporting.
+            </div>
+        </div>
+
+        <h3 class="fade-in">FX’s Image Problem: A Lack of Trust</h3>
+        <div class="quote fade-in">
+            "The foreign exchange industry has been suffering from a lack of trust. This lack of trust is evident both between participants in the market and, at least as importantly, between the public and the market."<br>
+            - Guy Debelle, Deputy Governor RBA, 15 June 2017
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-launch')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod1-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod1-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">An Australian Financial Services Licence is issued by which of the following regulators who oversee aspects of FX trading in Australia?</p>
+        <div id="mod1-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod1" value="A"> ASIC</label>
+            <label class="quiz-option"><input type="radio" name="mod1" value="B"> RBA</label>
+            <label class="quiz-option"><input type="radio" name="mod1" value="C"> AUSTRAC</label>
+            <label class="quiz-option"><input type="radio" name="mod1" value="D"> The Exchange</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod1')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod1', 'A', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-mod2')">Submit</button>
+        </div>
+        <div id="mod1-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 2 (FLASHCARDS) -->
+    <div id="screen-mod2" class="screen">
+        <h2 class="fade-in">MICRO-MODULE 2: Enforcement Outcomes</h2>
+        <p class="fade-in">Following its investigations, ASIC has implemented a series of substantial enforcement outcomes relating to FX.</p>
+        
+        <div class="instruction-text fade-in">Tap cards to review key enforcement cases ↺</div>
+        <div class="flashcard-grid fade-in">
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">ASIC Enforceable Undertakings</div>
+                    <div class="flashcard-back">Failings included: Disclosure of confidential client orders, trading inconsistent with orders, and attempts to unduly influence the market.</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Insider Trading in FX</div>
+                    <div class="flashcard-back">In 2015, two margin FX traders were sentenced to jail for trading on non-public ABS statistical information, netting $7 million.</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">AUSTRAC Reporting Failure</div>
+                    <div class="flashcard-back">An FX business was fined $100k and its manager jailed for 10 months for avoiding standard significant cash transaction reports.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod1')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod2-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod2-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">Trading on non-public statistical information is permitted if the information was obtained from the ABS?</p>
+        <div id="mod2-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod2" value="True"> True</label>
+            <label class="quiz-option"><input type="radio" name="mod2" value="False"> False</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod2')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod2', 'False', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-mod3')">Submit</button>
+        </div>
+        <div id="mod2-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 3 (FLASHCARDS) -->
+    <div id="screen-mod3" class="screen">
+        <h2 class="fade-in">MICRO-MODULE 3: Contraventions</h2>
+        <p class="fade-in">The Australian Corporations Act and the ASIC Act both have provisions which are relevant to conduct issues in the FX market.</p>
+        
+        <div class="instruction-text fade-in">Tap cards to reveal prohibited behaviors ↺</div>
+        <div class="flashcard-grid fade-in">
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Insider Trading</div>
+                    <div class="flashcard-back">Includes trading on inside info, tipping others to trade, disclosing confidential client order info, and acting on confidential info.</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Market Manipulation</div>
+                    <div class="flashcard-back">Manipulating the price (particularly at key fixing times), false trading, and trading with no change in beneficial ownership.</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Misleading Conduct</div>
+                    <div class="flashcard-back">Making false or misleading statements and inducing someone to deal based on those statements.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod2')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod3-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod3-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">Contraventions of your obligations under your AFS Licence can lead to civil or criminal prosecution against the firm but not an individual.</p>
+        <div id="mod3-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod3" value="True"> True</label>
+            <label class="quiz-option"><input type="radio" name="mod3" value="False"> False</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod3')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod3', 'False', 'You are correct! ASIC is responsible for the licensing and supervision of Market Participants in Australia.', 'Unfortunately, that answer is incorrect. The correct response is False.', 'screen-mod4')">Submit</button>
+        </div>
+        <div id="mod3-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 4 (FLASHCARDS) -->
+    <div id="screen-mod4" class="screen">
+        <h2 class="fade-in">MICRO-MODULE 4: Conduct and Behaviour</h2>
+        
+        <p class="fade-in">In May 2017, ASIC released Report 525, “Promoting better behaviour: Spot FX”. It details concerns and sets clear guidance on behavior expectations.</p>
+        
+        <div class="instruction-text fade-in">Tap cards to compare Concerns vs. Expectations ↺</div>
+        <div class="flashcard-grid fade-in">
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">ASIC Concerns</div>
+                    <div class="flashcard-back">Lack of training, poor handling of confidential info, vague targets, and failing to detect or address misconduct.</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">ASIC Expectations</div>
+                    <div class="flashcard-back">Supervisors model expected standards, foster an environment to challenge inappropriate practices, and impose visible sanctions.</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">FX Global Code</div>
+                    <div class="flashcard-back">Released in mid-2017, a key document setting out high-level regulatory expectations. All FX market individuals must understand it.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod3')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod4-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod4-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">ASIC expects that supervisors should be held to account where their behaviour has not been adequate.</p>
+        <div id="mod4-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod4" value="True"> True</label>
+            <label class="quiz-option"><input type="radio" name="mod4" value="False"> False</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod4')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod4', 'True', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-mod5')">Submit</button>
+        </div>
+        <div id="mod4-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 5 (ACCORDIONS) -->
+    <div id="screen-mod5" class="screen">
+        <h2 class="fade-in">MICRO-MODULE 5: Rules and Regulations</h2>
+        <p class="fade-in">All designated services in financial products are covered by AUSTRAC’S requirements, including making a market and dealing with clients in FX and derivatives.</p>
+        
+        <h3 class="fade-in">The Wholesale Test</h3>
+        <p class="fade-in">In Australian regulation there is a distinction between Retail and Wholesale clients. Retail clients have additional protections. A financial product or service is provided to a person as a retail client <strong>unless</strong> one or more of the following apply (click to expand):</p>
+        
+        <div class="fade-in">
+            <button class="accordion">Price Threshold</button>
+            <div class="panel">
+                <p>The price for the provision of the product is $500k or greater.</p>
+            </div>
+
+            <button class="accordion">Business Use</button>
+            <div class="panel">
+                <p>The product is for use in connection to a business, which is not a small business, being 20 or more employees or 100 or more for a manufacturer of goods.</p>
+            </div>
+
+            <button class="accordion">Accountant's Certificate</button>
+            <div class="panel">
+                <p>The client has a certificate from a qualified accountant setting out that the client had net assets of at least $2.5m or an income of at least $250k over the last two years.</p>
+            </div>
+            
+            <button class="accordion">Professional & Sophisticated Investors</button>
+            <div class="panel">
+                <p>The person is a Professional Investor (e.g., licensed financial services firms, trustees of super funds with $10m+ assets) or a Sophisticated Investor with relevant investing experience acknowledged prior to product provision.</p>
+            </div>
+        </div>
+
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod4')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod5-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod5-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">If you deal with clients in FX, as long as you are enrolled with AUSTRAC, there is no need to implement an AML/CTF Program.</p>
+        <div id="mod5-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod5" value="True"> True</label>
+            <label class="quiz-option"><input type="radio" name="mod5" value="False"> False</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod5')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod5', 'False', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-final-intro')">Submit</button>
+        </div>
+        <div id="mod5-feedback" class="feedback"></div>
+    </div>
+
+    <!-- FINAL QUIZ INTRO -->
+    <div id="screen-final-intro" class="screen">
+        <h2 class="fade-in">Introduction to FX Regulation in Australia – Final Knowledge Quiz</h2>
+        <h3 class="fade-in">Quiz Instructions:</h3>
+        <ul class="fade-in">
+            <li>This Knowledge Quiz will test your understanding of FX Market Regulation in Australia.</li>
+            <li>You must achieve a pass mark of 80% or more to complete this course.</li>
+            <li>There is no time limit to complete the quiz.</li>
+            <li>If you do not pass, you can retake the quiz as many times as necessary. Questions will be re-shuffled.</li>
+        </ul>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod5')">&larr; Back</button>
+            <button onclick="startFinalQuiz()">Start Final Quiz</button>
+        </div>
+    </div>
+
+    <!-- DYNAMIC FINAL QUIZ SCREEN -->
+    <div id="screen-final-quiz" class="screen">
+        <h2 class="fade-in">Final Knowledge Quiz</h2>
+        <div id="final-quiz-container" class="fade-in"></div>
+        
+        <div class="button-group fade-in" id="final-quiz-actions" style="display:none;">
+            <button class="back-btn" onclick="nextScreen('screen-final-intro')">&larr; Back</button>
+            <button onclick="submitFinalQuiz()">Submit Final Quiz</button>
+        </div>
+    </div>
+
+    <!-- COURSE COMPLETE - PASS -->
+    <div id="screen-complete-pass" class="screen">
+        <h2 class="fade-in">Congratulations!</h2>
+        <p class="fade-in">Congratulations! You have passed the final knowledge quiz for the Introduction to FX Regulation in Australia course. You can now download the course completion certificate and email it to yourself. The certificate will be valid for a period of 12 months.</p>
+        <button class="fade-in" onclick="location.reload()">Return to Start</button>
+    </div>
+
+    <!-- COURSE COMPLETE - FAIL -->
+    <div id="screen-complete-fail" class="screen">
+        <h2 class="fade-in">Result</h2>
+        <p class="fade-in">Unfortunately you have not achieved a passing score of 80% or more. Please review the information contained within the micro-modules for this course before re-taking the knowledge quiz.</p>
+        <button class="fade-in" onclick="startFinalQuiz()">Retake Quiz</button>
+    </div>
+
+</div>
+
+<script>
+    // Tab Functionality
+    function openTab(evt, tabName) {
+        let i, tabcontent, tablinks;
+        tabcontent = evt.currentTarget.parentElement.parentElement.querySelectorAll(".tab-content");
+        for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+        tablinks = evt.currentTarget.parentElement.querySelectorAll(".tab-button");
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Accordion Functionality
+    var acc = document.getElementsByClassName("accordion");
+    for (let i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            } 
+        });
+    }
+
+    // Intersection Observer for Fade-Ins
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    function triggerAnimations() {
+        document.querySelectorAll('.fade-in').forEach((el) => {
+            el.classList.remove('visible'); // Reset for fresh trigger
+            observer.observe(el);
+            // Fallback trigger if already in view
+            setTimeout(() => {
+                const rect = el.getBoundingClientRect();
+                if(rect.top < window.innerHeight) el.classList.add('visible');
+            }, 100);
+        });
+    }
+
+    // Flashcard Toggle
+    function toggleCard(element) {
+        element.classList.toggle('flipped');
+    }
+
+    // Progress and Screen Navigation
+    const screens = [
+        'screen-launch', 'screen-mod1', 'screen-mod1-quiz', 'screen-mod2', 'screen-mod2-quiz', 
+        'screen-mod3', 'screen-mod3-quiz', 'screen-mod4', 'screen-mod4-quiz', 'screen-mod5', 
+        'screen-mod5-quiz', 'screen-final-intro', 'screen-final-quiz'
+    ];
+
+    function updateProgress(screenId) {
+        if(screenId === 'screen-launch') {
+            document.getElementById('progress-container').style.display = 'none';
+        } else {
+            document.getElementById('progress-container').style.display = 'block';
+            const index = screens.indexOf(screenId);
+            const percentage = Math.max(5, (index / (screens.length - 1)) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+        }
+    }
+
+    function nextScreen(nextId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(nextId).classList.add('active');
+        updateProgress(nextId);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        triggerAnimations(); // Re-trigger animations for the new screen
+    }
+
+    function checkModAnswer(modId, correctAnswer, correctText, incorrectText, nextId) {
+        const selected = document.querySelector(`input[name="${modId}"]:checked`);
+        const feedbackDiv = document.getElementById(`${modId}-feedback`);
+        
+        if (!selected) { alert("Please select an answer."); return; }
+
+        if (selected.value === correctAnswer) {
+            feedbackDiv.innerHTML = correctText;
+            feedbackDiv.className = "feedback correct fade-in visible";
+            setTimeout(() => nextScreen(nextId), 2000);
+        } else {
+            feedbackDiv.innerHTML = incorrectText;
+            feedbackDiv.className = "feedback incorrect fade-in visible";
+        }
+    }
+
+    // Initialize animations on load
+    triggerAnimations();
+
+    // Final Quiz Logic
+    const finalQuizQuestions = [
+        { q: "What are the potential consequences for an individual, of a breach of the Australian Corporations Act and the ASIC Act?", opts: ["Criminal penalties", "Civil penalties", "Banning", "All of the above."], ans: 3 },
+        { q: "Which of the following Regulators are strictly involved in the regulation of the Australian FX Market?", opts: ["ASIO, RBA and ASIC", "AUSTRAC, RBA and ASIC", "RBC and ASIC", "All of the above"], ans: 1 },
+        { q: "Under the ASIC Act, which of the following forms of trading conduct would be prohibited:", opts: ["Price manipulation that is not at key fixing times", "Trading that is fair and orderly", "False trading", "All of the above", "A and C only"], ans: 4 },
+        { q: "Once surveillance systems are put in place, in which scenario would you need to review the systems?", opts: ["When requested by ASIC", "Regularly to assess changes in business and emerging risks", "Every 5 years", "Whenever time allows"], ans: 1 },
+        { q: "True or False: It is OK to create a false or misleading appearance of active trading in derivatives on a derivatives market as long as your firm has authorised you to do so.", opts: ["True", "False"], ans: 1 }
+    ];
+
+    function startFinalQuiz() {
+        nextScreen('screen-final-quiz');
+        const container = document.getElementById('final-quiz-container');
+        container.innerHTML = '';
+        finalQuizQuestions.sort(() => Math.random() - 0.5);
+        finalQuizQuestions.forEach((item, index) => {
+            let html = `<div style="margin-bottom: 25px; padding: 15px; background: #fff; border: 1px solid #CCCCCC; border-radius: 8px;">
+                <p><strong>Question ${index + 1}:</strong> ${item.q}</p>`;
+            item.opts.forEach((opt, oIndex) => {
+                html += `<label class="quiz-option"><input type="radio" name="fq${index}" value="${oIndex}"> ${opt}</label>`;
+            });
+            html += `</div>`;
+            container.innerHTML += html;
+        });
+        document.getElementById('final-quiz-actions').style.display = 'flex';
+    }
+
+    function submitFinalQuiz() {
+        let score = 0, answeredAll = true;
+        finalQuizQuestions.forEach((item, index) => {
+            const selected = document.querySelector(`input[name="fq${index}"]:checked`);
+            if (!selected) answeredAll = false;
+            else if (parseInt(selected.value) === item.ans) score++;
+        });
+
+        if (!answeredAll) { alert("Please answer all questions before submitting."); return; }
+        
+        const percentage = (score / finalQuizQuestions.length) * 100;
+        if (percentage >= 80) nextScreen('screen-complete-pass');
+        else nextScreen('screen-complete-fail');
+        
+        document.getElementById('progress-container').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
