@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code of Conduct</title>
+    <style>
+        /* Mintegrity Brand Typography & Base Styles */
+        body {
+            font-family: 'Brandon Grotesque', Corbel, sans-serif;
+            background-color: #E9E9EA; /* Mintegrity Light Grey */
+            color: #001522; /* Mintegrity Black */
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        #app-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        /* Heading Styles based on Mintegrity Style Guide */
+        h1, h2 { 
+            color: #000F9F; /* Mintegrity Blue */
+            font-weight: 300; 
+            letter-spacing: 0.1em; 
+        }
+        h3 { 
+            color: #001522; /* Mintegrity Black */
+            font-weight: 500; 
+            text-transform: uppercase; 
+        }
+        
+        /* Logo Styles & Safe Area */
+        .header-logo-container {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #CCCCCC;
+        }
+        .company-logo {
+            max-height: 60px;
+            padding: 15px; /* 25% safe area clear space */
+            max-width: 100%;
+        }
+
+        /* Tooltip Styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 2px dotted #000F9F;
+            color: #000F9F;
+            font-weight: bold;
+            cursor: help;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 260px;
+            background-color: #001522;
+            color: #E9E9EA;
+            text-align: left;
+            border-radius: 6px;
+            padding: 12px;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -130px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            font-weight: normal;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            line-height: 1.4;
+            text-transform: none;
+            font-family: 'Brandon Grotesque', Corbel, sans-serif;
+        }
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #001522 transparent transparent transparent;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Fade-In Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: #CCCCCC; /* Mintegrity Mid Grey */
+            border-radius: 6px;
+            margin-bottom: 30px;
+            display: none;
+            height: 8px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #000F9F; /* Mintegrity Blue */
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        button {
+            background-color: #000F9F; /* Mintegrity Blue */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-family: 'Brandon Grotesque', Corbel, sans-serif;
+            letter-spacing: 0.05em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #78A2C3; /* Mintegrity Mid Blue */
+            color: #001522; 
+            transform: translateY(-2px);
+        }
+        button.back-btn {
+            background-color: #CCCCCC; /* Mintegrity Mid Grey */
+            color: #001522; 
+        }
+        button.back-btn:hover {
+            background-color: #91C2DD; /* Mintegrity Light Blue */
+        }
+
+        /* Tabs */
+        .tab-header {
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #CCCCCC;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #001522;
+            font-weight: 500;
+            margin-top: 0;
+            border-radius: 0;
+        }
+        .tab-button:hover { 
+            background: none; 
+            color: #78A2C3; 
+            transform: none; 
+        }
+        .tab-button.active {
+            color: #000F9F;
+            border-bottom: 3px solid #000F9F;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: #E9E9EA;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #CCCCCC;
+            border-top: none;
+        }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+
+        /* Accordion */
+        .accordion {
+            background-color: #CCCCCC; /* Mintegrity Mid Grey */
+            color: #001522;
+            cursor: pointer;
+            padding: 15px 20px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: 0.3s;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .accordion:after { content: '\002B'; font-size: 20px; color: #000F9F; }
+        .accordion.active:after { content: "\2212"; }
+        .accordion.active, .accordion:hover { background-color: #91C2DD; }
+        .panel {
+            padding: 0 20px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            border-left: 3px solid #000F9F;
+            margin-bottom: 10px;
+            border-radius: 0 0 6px 0;
+        }
+        .panel p, .panel ul { margin: 15px 0; }
+
+        /* Flashcards */
+        .instruction-text {
+            font-size: 0.9em;
+            color: #78A2C3;
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .flashcard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .flashcard {
+            background-color: transparent;
+            width: 100%;
+            height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 8px;
+        }
+        .flashcard-front { 
+            background-color: #000F9F;
+            color: white; 
+            font-weight: 500; 
+            font-size: 1.1em; 
+        }
+        .flashcard-back { 
+            background-color: #E9E9EA; 
+            color: #001522; 
+            transform: rotateY(180deg); 
+            font-size: 0.95em; 
+            border: 2px solid #000F9F; 
+            overflow-y: auto;
+        }
+
+        /* Quiz Styles */
+        .quiz-option {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background: #CCCCCC; 
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .quiz-option:hover { background: #91C2DD; }
+        .quiz-option input { margin-right: 10px; }
+        .feedback { margin-top: 15px; padding: 15px; border-radius: 6px; display: none; font-weight: 500; }
+        .feedback.correct { background-color: #d4edda; color: #155724; display: block; border-left: 4px solid #28a745; }
+        .feedback.incorrect { background-color: #f8d7da; color: #721c24; display: block; border-left: 4px solid #dc3545; }
+        
+        .footer-notes { font-size: 12px; margin-top: 40px; color: #001522; border-top: 1px solid #CCCCCC; padding-top: 15px; }
+        .quote { font-style: italic; border-left: 4px solid #000F9F; padding-left: 15px; margin: 20px 0; color: #001522; background: #E9E9EA; padding: 15px; border-radius: 0 8px 8px 0; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    
+    <!-- PERSISTENT HEADER LOGO -->
+    <div class="header-logo-container">
+        <img src="../mi_logo.jpg" alt="Mintegrity Logo" class="company-logo">
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-container" id="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- LAUNCH PAGE -->
+    <div id="screen-launch" class="screen active fade-in">
+        <h1 class="fade-in">Welcome to the Code of Conduct Course</h1>
+        
+        <p class="fade-in">The content of this course covers <span class="tooltip">ASIC<span class="tooltiptext">Australian Securities and Investments Commission</span></span>'s conduct and disclosure requirements, as well as <span class="tooltip">FAS<span class="tooltiptext">Financial Adviser Standards</span></span>, <span class="tooltip">AFMA<span class="tooltiptext">Australian Financial Markets Association</span></span>, and <span class="tooltip">SIAA<span class="tooltiptext">Stockbrokers and Investment Advisers Association</span></span> codes.</p>
+        
+        <p class="fade-in">This course consists of 8 separate micro-lessons that can be completed at different times for your convenience. You must complete all micro-modules to finish this learning material.</p>
+        <p class="fade-in"><strong>Duration:</strong> 60 minutes. You may be able to claim 1.0 CPD hour for the completion of this course in the CPD Competency category of Regulatory Compliance and Consumer Protection.</p>
+        
+        <button class="fade-in" onclick="nextScreen('screen-mod1')">LAUNCH COURSE</button>
+
+        <div class="footer-notes fade-in">
+            <p><strong>Copyright:</strong> Copyright © MIntegrity. All rights reserved. No part of this learning material may be reproduced, distributed, or transmitted in any form.</p>
+            <p><strong>Disclaimer:</strong> This e-learning content should be used as a guide only and is not meant to replace any specific advice from your employer. MIntegrity disclaims all liability in respect of anything done in reliance on this content.</p>
+        </div>
+    </div>
+
+    <!-- MODULE 1 -->
+    <div id="screen-mod1" class="screen">
+        <h2 class="fade-in">MODULE 1: Overview of Conduct Obligations</h2>
+        
+        <p class="fade-in">ASIC believes that a code of conduct is a pinnacle of industry self-regulatory initiatives. Click the tabs below to explore the role and criteria of codes:</p>
+        
+        <div class="fade-in">
+            <div class="tab-header">
+                <button class="tab-button active" onclick="openTab(event, 'tab-purpose')">Purpose & Role</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-criteria')">Code Criteria</button>
+            </div>
+            
+            <div id="tab-purpose" class="tab-content active">
+                <strong>Purpose & Roles of Codes</strong><br>
+                Codes are essentially a set of enforceable rules that delivers measurable benefit to consumers. They improve consumer trust, support dispute resolution, and provide certainty. Their primary role is to raise standards and complement legislative requirements. An effective code addresses specific industry issues not covered by legislation and clarifies what needs to be done to comply.
+            </div>
+            
+            <div id="tab-criteria" class="tab-content">
+                <strong>Code Criteria</strong><br>
+                While not mandatory, ASIC's criteria for approving a code include: consistency with the <span class="tooltip">Corporations Act<span class="tooltiptext">Corporations Act 2001 (Cth)</span></span>, appropriate development process, adequate enforceability (dispute resolution/sanctions), effective monitoring/reporting, and independent regular reviews.
+            </div>
+        </div>
+
+        <h3 class="fade-in">AFSL & Market Participant Obligations</h3>
+        <div class="fade-in">
+            <button class="accordion">AFSL General Obligations (s912A)</button>
+            <div class="panel">
+                <p>Under s912A of the Corporations Act, an <span class="tooltip">AFS licensee<span class="tooltiptext">A person who holds an Australian financial services licence under s913B of the Corporations Act</span></span> must do all things necessary to ensure financial services are provided efficiently, honestly and fairly. They must have adequate arrangements for managing conflicts of interest, comply with licence conditions, maintain competence, have adequate risk and compliance arrangements, ensure representatives are trained, and have a dispute resolution system for <span class="tooltip">Retail clients<span class="tooltiptext">A client as defined in s761G of the Corporations Act and Div 2 of Pt 7.1 of the Corporations Regulations</span></span>.</p>
+            </div>
+            <button class="accordion">Reportable Situations & Director Duties</button>
+            <div class="panel">
+                <p>Under s912D and s912DAA, licensees must notify ASIC within 30 Business Days of a reportable situation, including significant breaches, investigations lasting over 30 days, or conduct constituting gross negligence or serious fraud. Furthermore, Directors must act with due care, diligence, and in the best interests of the corporation.</p>
+            </div>
+            <button class="accordion">Market Participant Obligations</button>
+            <div class="panel">
+                <p>ASIC Market Integrity Rules require appropriate management structures, operations reasonably designed to achieve compliance, and supervisory staff with sufficient seniority. <span class="tooltip">Market Participants<span class="tooltiptext">A participant in the Market admitted under the Market Operating Rules</span></span> must only hire persons of good fame and character. Under Rule 2.1.5 and 2.1.6, they must not engage in Unprofessional Conduct and are responsible for all actions and omissions of all employees.</p>
+            </div>
+            <button class="accordion">Conduct and Disclosure Regulations</button>
+            <div class="panel">
+                <p>When providing personal advice to retail clients, you must act in their best interests (s961B), provide appropriate advice (s961G), warn if advice is based on incomplete info (s961H), and prioritise the client's interests (s961J). A <span class="tooltip">FSG<span class="tooltiptext">Financial Services Guide</span></span> must be prepared and given to the client before the service is provided.</p>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-launch')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod1-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod1-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">Which of the following statements is true?</p>
+        <div id="mod1-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod1" value="A"> A Market Participant must not engage in Unprofessional Conduct.</label>
+            <label class="quiz-option"><input type="radio" name="mod1" value="B"> A Market Participant must ensure that its supervisory staff does not engage in Unprofessional Conduct.</label>
+            <label class="quiz-option"><input type="radio" name="mod1" value="C"> A Market Participant is responsible for all actions and omissions of its Employees.</label>
+            <label class="quiz-option"><input type="radio" name="mod1" value="D"> All of these answers</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod1')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod1', 'D', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-mod2')">Submit</button>
+        </div>
+        <div id="mod1-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 2 -->
+    <div id="screen-mod2" class="screen">
+        <h2 class="fade-in">MODULE 2: Conduct Risk</h2>
+        <p class="fade-in">Conduct Risk is defined as the risk of inappropriate, unethical or unlawful behaviour on the part of an organisation’s management or employees. It should be actively identified and monitored by compliance and senior management.</p>
+        
+        <p class="fade-in">ASIC believes there are four key drivers of culture: Leadership & professionalism, governance & individual accountability, performance & consequence management, and conduct & culture training.</p>
+        
+        <div class="fade-in">
+            <button class="accordion">Better Practices (Leadership & Governance)</button>
+            <div class="panel">
+                <p>ASIC observed stronger accountability when boards showed active management by holding senior management to account when operating outside risk appetites. Better practices include robust documented policies, tracking culture/conduct risk, distinguishing global vs regional risks, using the three lines of defence, and having direct engagement from the compliance function in consequence decisions.</p>
+            </div>
+            <button class="accordion">Better Practices (Performance & Training)</button>
+            <div class="panel">
+                <p>Good conduct was incentivised when performance reviews contained key indicators for compliance, career progression was aligned with positive conduct, and downward adjustments to remuneration were applied for breaches. Furthermore, conduct and culture training should be ongoing for both new and existing employees, utilizing real-life examples of misconduct as case studies.</p>
+            </div>
+            <button class="accordion">Poorer Practices</button>
+            <div class="panel">
+                <p>ASIC's review found poorer practices included inadequate distinction between conduct risk and operational risk controls; instances where conduct did not inform individual remuneration; limited influence of compliance in decision-making; and failure to firmly embed conduct training into regular schedules.</p>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod1')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod2-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod2-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">To incentivise good conduct and compliance, financial firms should introduce which of the following performance management consequences?</p>
+        <div id="mod2-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod2" value="A"> Career progression contingent on positive conduct</label>
+            <label class="quiz-option"><input type="radio" name="mod2" value="B"> Individual and divisional team consequences</label>
+            <label class="quiz-option"><input type="radio" name="mod2" value="C"> Disciplinary action for poor conduct</label>
+            <label class="quiz-option"><input type="radio" name="mod2" value="D"> All of these answers</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod2')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod2', 'D', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-mod3')">Submit</button>
+        </div>
+        <div id="mod2-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 3 -->
+    <div id="screen-mod3" class="screen">
+        <h2 class="fade-in">MODULE 3: Responsible Behaviour</h2>
+        <p class="fade-in">All <span class="tooltip">AFSL<span class="tooltiptext">An Australian Financial Services Licence granted under s913B of the Corporations Act</span></span> holders are expected to act professionally and ethically in carrying out their duties. Review the categories of responsible behavior below.</p>
+        
+        <div class="fade-in">
+            <div class="tab-header">
+                <button class="tab-button active" onclick="openTab(event, 'tab-privacy')">Privacy</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-public')">Public Representation</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-social')">Social Media</button>
+            </div>
+            
+            <div id="tab-privacy" class="tab-content active">
+                <strong>Privacy</strong><br>
+                Protecting client and firm information is integral. Firms should not misuse information obtained as a consequence of client relationships for personal gain. When collecting and safeguarding information, firms should not share non-public information — accidentally or intentionally — with a third party or colleague who does not have a business need to know.
+            </div>
+            
+            <div id="tab-public" class="tab-content">
+                <strong>Public Representation</strong><br>
+                Firms must respect individual freedom of expression. However, an individual must exercise personal responsibility and care during or outside of work (including comments made online or to media) to ensure that any casual comment does not reveal private or confidential information, or compromise the integrity and reputation of the firm.
+            </div>
+            
+            <div id="tab-social" class="tab-content">
+                <strong>Social Media & Communications</strong><br>
+                Firms should not allow employees to use social media platforms to conduct business or discuss client matters. Employees must take care to separate their personal roles from their business position when communicating online, and to not presume to speak for the business when not authorized.
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod2')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod3-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod3-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">It is OK to discuss non-public information about a work colleague on your personal Facebook account, as it has nothing to do with your work or employment.</p>
+        <div id="mod3-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod3" value="True"> True</label>
+            <label class="quiz-option"><input type="radio" name="mod3" value="False"> False</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod3')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod3', 'False', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-mod4')">Submit</button>
+        </div>
+        <div id="mod3-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 4 -->
+    <div id="screen-mod4" class="screen">
+        <h2 class="fade-in">MODULE 4: Code of Conduct Content</h2>
+        <p class="fade-in">Whilst there is no one size fits all in regards to designing a Code of Conduct, the following information outlines content that has been evidenced as best practice.</p>
+        
+        <div class="fade-in">
+            <button class="accordion">Expectations & Diversity</button>
+            <div class="panel">
+                <p>Employees must obey the law and engage in behaviour to act honestly, efficiently, and fairly. There is zero tolerance for illegal acts, harassment, bullying, or sexual harassment. A financial firm should provide a safe, healthy work environment that is inclusive and respectful of all employees’ differences. Unlawful discrimination or victimisation will not be tolerated.</p>
+            </div>
+            <button class="accordion">Conflicts of Interest & Soft Dollar</button>
+            <div class="panel">
+                <p>Employees must not use their position for private advantage. Outside employment/directorships should be disclosed and approved to avoid interference with independent judgment. The term ‘soft dollar’ means any benefit received other than a basic cash commission (e.g., subsidised business equipment, overseas conferences). The law generally requires these be disclosed in the FSG and Statement of Advice. Firms must outline permissible gift limits and strictly forbid kickbacks or secret commissions.</p>
+            </div>
+            <button class="accordion">Records and Communication</button>
+            <div class="panel">
+                <p>Employees should not participate in creating any false record or communication, whether internal or external. This includes false expense, attendance, or production statements, as well as false advertising or deceptive marketing practices.</p>
+            </div>
+            <button class="accordion">Privacy & IT Systems</button>
+            <div class="panel">
+                <p>All firms should have a Privacy Policy. Personal information must only be collected directly from the person whenever possible, retained only for as long as necessary, physically secured, and strictly limited regarding internal access. Personal info must only be used for the purposes for which it was originally obtained.</p>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod3')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod4-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod4-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">A financial firms Code of Conduct should state that it ensures a safe and healthy work environment that is…</p>
+        <div id="mod4-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod4" value="A"> disrespectful of each other’s differences.</label>
+            <label class="quiz-option"><input type="radio" name="mod4" value="B"> occlusive of each other’s differences.</label>
+            <label class="quiz-option"><input type="radio" name="mod4" value="C"> exclusive of each other’s differences.</label>
+            <label class="quiz-option"><input type="radio" name="mod4" value="D"> inclusive and respectful of each other’s differences.</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod4')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod4', 'D', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-mod5')">Submit</button>
+        </div>
+        <div id="mod4-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 5 (FAS) -->
+    <div id="screen-mod5" class="screen">
+        <h2 class="fade-in">MODULE 5: FAS’s Code of Ethics</h2>
+        <p class="fade-in">The <span class="tooltip">FAS<span class="tooltiptext">Financial Adviser Standards</span></span> Code of Ethics is a principles-based standard designed to professionalise the sector. Advisers must always act in a way that promotes the core values: <strong>Trustworthiness, Competence, Honesty, Fairness, and Diligence</strong>.</p>
+        
+        <div class="fade-in">
+            <button class="accordion">Ethical Behaviour (Standards 1-3)</button>
+            <div class="panel">
+                <p><strong>Standard 1:</strong> You must act in accordance with all applicable laws, including this Code, and not try to avoid or circumvent their intent.<br>
+                <strong>Standard 2:</strong> You must act with integrity and in the best interests of each of your clients.<br>
+                <strong>Standard 3:</strong> You must not advise, refer or act in any other manner where you have a conflict of interest or duty. Any conflict must be disclosed and you must not act.</p>
+            </div>
+            <button class="accordion">Client Care (Standards 4-6)</button>
+            <div class="panel">
+                <p><strong>Standard 4:</strong> You may act for a client only with the client’s free, prior and informed consent, explaining services, terms, and privacy clearly.<br>
+                <strong>Standard 5:</strong> All advice and product recommendations must be in the best interests of the client and appropriate to their individual circumstances.<br>
+                <strong>Standard 6:</strong> You must take into account the broad effects arising from the client acting on your advice and actively consider their broader, long-term interests.</p>
+            </div>
+            <button class="accordion">Quality Process (Standards 7-9)</button>
+            <div class="panel">
+                <p><strong>Standard 7:</strong> The client must give informed consent to all benefits/fees. You must satisfy yourself that fees and charges are fair, reasonable, and represent value for money.<br>
+                <strong>Standard 8:</strong> You must ensure that your records of clients are kept in a form that is complete and accurate.<br>
+                <strong>Standard 9:</strong> All advice you give, and products you recommend, must be offered in good faith, with competence, and be neither misleading nor deceptive.</p>
+            </div>
+            <button class="accordion">Professional Commitment (Standards 10-12)</button>
+            <div class="panel">
+                <p><strong>Standard 10:</strong> You must develop, maintain and apply a high level of relevant knowledge and skills.<br>
+                <strong>Standard 11:</strong> You must cooperate with ASIC and monitoring bodies in any investigation of a breach or potential breach.<br>
+                <strong>Standard 12:</strong> Individually and in cooperation with peers, you must uphold and promote the ethical standards of the profession and hold each other accountable.</p>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod4')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod5-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod5-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">You act in a client’s best interests if the advice and products you recommend are appropriate to meet which of the following?</p>
+        <div id="mod5-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod5" value="A"> The requirement to meet your minimum targets</label>
+            <label class="quiz-option"><input type="radio" name="mod5" value="B"> The client’s objectives and financial situation</label>
+            <label class="quiz-option"><input type="radio" name="mod5" value="C"> The financial needs of your firm</label>
+            <label class="quiz-option"><input type="radio" name="mod5" value="D"> The objectives of your firm</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod5')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod5', 'B', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-mod6')">Submit</button>
+        </div>
+        <div id="mod5-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 6 (AFMA) -->
+    <div id="screen-mod6" class="screen">
+        <h2 class="fade-in">MODULE 6: AFMA Code of Conduct</h2>
+        <p class="fade-in">The <span class="tooltip">AFMA<span class="tooltiptext">Australian Financial Markets Association</span></span> Code outlines ethical principles for acceptable behaviour in financial markets. The overarching aim is to set high standards when conducting business in OTC and exchange-traded markets.</p>
+        
+        <div class="fade-in">
+            <div class="tab-header">
+                <button class="tab-button active" onclick="openTab(event, 'tab-afma1')">Principles 1-3</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-afma2')">Principles 4-6</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-afma3')">Principles 7-9</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-afma4')">Principles 10-12</button>
+            </div>
+            
+            <div id="tab-afma1" class="tab-content active">
+                <strong>EP 1-3: Community, Culture & Laws</strong><br>
+                Conduct affairs to serve the broader community. Boards and senior management must establish a culture setting clear expectations about conduct. Members must observe laws. This includes having "Chinese walls" to quarantine employees with inside information, maintaining an AML/CTF program to "Know Your Client", and avoiding anti-competitive behaviour like cartels or exclusive dealing.
+            </div>
+            
+            <div id="tab-afma2" class="tab-content">
+                <strong>EP 4-6: Fairness & Professionalism</strong><br>
+                Act fairly with clients. Under FOFA, members servicing retail clients have a higher duty of care and must pay close attention to vulnerable client groups (e.g., aged, hearing impaired, or those with poor English). Members must equip staff to perform with integrity, managing conflicts in remuneration, controlling personal account trading, and ensuring judgment is not impaired by illicit drugs or alcohol.
+            </div>
+            
+            <div id="tab-afma3" class="tab-content">
+                <strong>EP 7-9: Respect, Authority & Records</strong><br>
+                Behaviour towards colleagues must be respectful; harassment is not tolerated. Staff must act within delegated authority and clearly defined risk parameters. Members must ensure the integrity and confidentiality of records, retaining data in readily accessible formats for minimum statutory periods and destroying it only via defined policies.
+            </div>
+            
+            <div id="tab-afma4" class="tab-content">
+                <strong>EP 10-12: Conflicts, Standards & Reputation</strong><br>
+                Identify and manage conflicts, encouraging a culture of whistleblowing for market irregularities. Observe market standards: front office traders should not take part in settlement (Segregation of Duties), and system access to trading platforms must be strictly governed. Members should anticipate disruptions with a Business Continuity Plan (BCP) and maintain careful media policies.
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod5')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod6-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod6-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">Ethical Principle 9 of the AFMA code notes that a key factor in the trust relationship with a client is that the client’s information will:</p>
+        <div id="mod6-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod6" value="A"> Never be used</label>
+            <label class="quiz-option"><input type="radio" name="mod6" value="B"> Be deleted within 3 months</label>
+            <label class="quiz-option"><input type="radio" name="mod6" value="C"> Be used inappropriately</label>
+            <label class="quiz-option"><input type="radio" name="mod6" value="D"> Not be used inappropriately</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod6')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod6', 'D', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-mod7')">Submit</button>
+        </div>
+        <div id="mod6-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 7 (SIAA) -->
+    <div id="screen-mod7" class="screen">
+        <h2 class="fade-in">MODULE 7: SIAA Code of Ethical Conduct</h2>
+        <p class="fade-in">The <span class="tooltip">SIAA<span class="tooltiptext">Stockbrokers and Investment Advisers Association</span></span> Code provides guidance to maintain and improve ethical behaviour in the stockbroking and investment advice profession.</p>
+        
+        <div class="fade-in">
+            <button class="accordion">Core Principles</button>
+            <div class="panel">
+                <p><strong>Obey the law & Integrity:</strong> Members must obey all laws, act unbiased, and be personally responsible for their conduct. Discrimination based on gender, race, religion, or sexual identity is forbidden.<br>
+                <strong>Respect Client Rights & Confidentiality:</strong> Provide adequate information for informed consent regarding work and fees. Confidential client information must only be disclosed as authorised by the client, required by law, or to the Association during disciplinary reviews.</p>
+            </div>
+            <button class="accordion">Competence & Market Integrity</button>
+            <div class="panel">
+                <p><strong>Competence:</strong> Maintain knowledge through continuing professional development (CPD). Principal Members must take reasonable action to ensure staff are competent and provide required training and supervision.<br>
+                <strong>Fair Market:</strong> Compete fairly without taking unfair advantage or engaging in unconscionable conduct. Principal members must have adequate arrangements to minimize conflicts of interest.</p>
+            </div>
+            <button class="accordion">Whistleblowing & Cooperation</button>
+            <div class="panel">
+                <p>Members must report illegal conduct to appropriate authorities where disclosure is protected by law. Crucially, members must not discriminate or take adverse action against a person who discloses illegal conduct. Furthermore, members must obtain required Professional Indemnity Insurance cover.</p>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod6')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod7-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod7-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">SIAA Members, when they know of illegal conduct, must report that conduct to an appropriate authority in accordance with the law where their disclosure is protected by law.</p>
+        <div id="mod7-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod7" value="True"> True</label>
+            <label class="quiz-option"><input type="radio" name="mod7" value="False"> False</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod7')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod7', 'True', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-mod8')">Submit</button>
+        </div>
+        <div id="mod7-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 8 (Consequences) -->
+    <div id="screen-mod8" class="screen">
+        <h2 class="fade-in">MODULE 8: Consequences of Misconduct</h2>
+        
+        <div class="fade-in">
+            <button class="accordion">Legal, Regulatory & Internal Consequences</button>
+            <div class="panel">
+                <p>If conduct is a potential breach of the Corporations Act, ASIC may pursue civil, criminal or administrative action. ASIC can remove the firm’s AFSL, and individuals could be subject to suspensions, banning, fines, and gaol time. Internal breaches may be addressed by Senior Management, HR, and Compliance, and your firm may have to self-report the matter. If the conduct breaches ASIC Market Integrity Rules, the <span class="tooltip">MDP<span class="tooltiptext">ASIC’s Markets Disciplinary Panel</span></span> may issue infringement notices, penalties, or public censures against the Market Participant.</p>
+            </div>
+            <button class="accordion">Reporting Suspected Breaches</button>
+            <div class="panel">
+                <p>It is important to speak up about potential breaches even if it does not directly affect you. Suspected breaches should immediately be reported to a manager, Compliance, or HR. Whistleblowers may be offered protection by laws such as the Fair Work Act 2009, the Public Interest Disclosure Act 2013, and Whistleblowing protections RG170.</p>
+            </div>
+            <button class="accordion">Case Study: Max and Olivia</button>
+            <div class="panel">
+                <p><strong>The Scenario:</strong> Mike is an adviser with Fantastic Advice Pty Ltd, a subsidiary of Big Bank Ltd. He advises Max and Olivia to set up an SMSF to buy a $1.5m bed and breakfast, rolling over their $300k combined super, and purchasing high-premium life insurance from a related body corporate to cover the massive debt. Max and Olivia establish the SMSF, paying $5,000 upfront and $3,000 ongoing. Big Bank receives $4,000 in upfront commissions, helping Mike hit his bonus target. Later, Big Bank tells Max and Olivia their situation cannot actually support the loan they need.</p>
+                <p><strong>The Breaches:</strong> Mike breached FAS Standards 2, 5, and 6 by failing to provide advice in his clients' best interests and ignoring long-term circumstances. He breached Standard 3 by acting to derive an inappropriate personal advantage (bonuses and commissions). Finally, he breached Standard 7 as the excessive fees did not represent value for money for Max and Olivia.</p>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod7')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod8-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <div id="screen-mod8-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check</h2>
+        <p class="fade-in">What are the potential consequences for an individual if found in breach of the Corporations Act?</p>
+        <div id="mod8-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod8" value="A"> Criminal penalties</label>
+            <label class="quiz-option"><input type="radio" name="mod8" value="B"> Civil penalties</label>
+            <label class="quiz-option"><input type="radio" name="mod8" value="C"> Banning</label>
+            <label class="quiz-option"><input type="radio" name="mod8" value="D"> All of the above</label>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod8')">&larr; Back</button>
+            <!-- Goes directly to the completion screen -->
+            <button onclick="checkModAnswer('mod8', 'D', 'You are correct!', 'Unfortunately, that answer is incorrect.', 'screen-complete')">Submit</button>
+        </div>
+        <div id="mod8-feedback" class="feedback"></div>
+    </div>
+
+    <!-- COURSE COMPLETE SCREEN -->
+    <div id="screen-complete" class="screen">
+        <h2 class="fade-in">Congratulations!</h2>
+        <p class="fade-in">You have now completed all modules of the Code of Conduct Learning material.</p>
+        <p class="fade-in">You can now continue to complete the accompanying quiz in Caddie to earn CPD points for this course.</p>
+
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="location.reload()">Return to Start</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Tab Functionality
+    function openTab(evt, tabName) {
+        let i, tabcontent, tablinks;
+        tabcontent = evt.currentTarget.parentElement.parentElement.querySelectorAll(".tab-content");
+        for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+        tablinks = evt.currentTarget.parentElement.querySelectorAll(".tab-button");
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Accordion Functionality
+    var acc = document.getElementsByClassName("accordion");
+    for (let i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            } 
+        });
+    }
+
+    // Intersection Observer for Fade-Ins
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    function triggerAnimations() {
+        document.querySelectorAll('.fade-in').forEach((el) => {
+            el.classList.remove('visible'); 
+            observer.observe(el);
+            setTimeout(() => {
+                const rect = el.getBoundingClientRect();
+                if(rect.top < window.innerHeight) el.classList.add('visible');
+            }, 100);
+        });
+    }
+
+    // Flashcard Toggle
+    function toggleCard(element) {
+        element.classList.toggle('flipped');
+    }
+
+    // Progress and Screen Navigation Array (Removed Final Quiz screens, added screen-complete)
+    const screens = [
+        'screen-launch', 'screen-mod1', 'screen-mod1-quiz', 'screen-mod2', 'screen-mod2-quiz', 
+        'screen-mod3', 'screen-mod3-quiz', 'screen-mod4', 'screen-mod4-quiz', 'screen-mod5', 
+        'screen-mod5-quiz', 'screen-mod6', 'screen-mod6-quiz', 'screen-mod7', 'screen-mod7-quiz',
+        'screen-mod8', 'screen-mod8-quiz', 'screen-complete'
+    ];
+
+    function updateProgress(screenId) {
+        if(screenId === 'screen-launch') {
+            document.getElementById('progress-container').style.display = 'none';
+        } else {
+            document.getElementById('progress-container').style.display = 'block';
+            const index = screens.indexOf(screenId);
+            const percentage = Math.max(5, (index / (screens.length - 1)) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+        }
+    }
+
+    function nextScreen(nextId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(nextId).classList.add('active');
+        updateProgress(nextId);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        triggerAnimations();
+    }
+
+    function checkModAnswer(modId, correctAnswer, correctText, incorrectText, nextId) {
+        const selected = document.querySelector(`input[name="${modId}"]:checked`);
+        const feedbackDiv = document.getElementById(`${modId}-feedback`);
+        
+        if (!selected) { alert("Please select an answer."); return; }
+
+        if (selected.value === correctAnswer) {
+            feedbackDiv.innerHTML = correctText;
+            feedbackDiv.className = "feedback correct fade-in visible";
+            setTimeout(() => {
+                feedbackDiv.style.display = 'none';
+                selected.checked = false;
+                nextScreen(nextId);
+            }, 2000);
+        } else {
+            feedbackDiv.innerHTML = incorrectText;
+            feedbackDiv.className = "feedback incorrect fade-in visible";
+        }
+    }
+
+    // Initialize animations
+    triggerAnimations();
+
+</script>
+
+</body>
+</html>
