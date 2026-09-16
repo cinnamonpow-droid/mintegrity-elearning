@@ -38,16 +38,27 @@
             text-transform: uppercase; 
         }
         
-        /* Logo Styles & Safe Area */
+       /* Split Header Layout & Safe Area */
         .header-logo-container {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 25px;
             border-bottom: 1px solid #CCCCCC;
+            flex-wrap: wrap; 
         }
         .company-logo {
-            max-height: 60px;
-            padding: 15px; /* 25% safe area clear space */
+            max-height: 50px;
+            padding: 12px; 
             max-width: 100%;
+        }
+        .course-title-header {
+            font-size: 16px;
+            color: #000F9F; 
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding-right: 15px;
         }
 
         /* Tooltip Styles */
@@ -312,9 +323,10 @@
 
 <div id="app-container">
     
-    <!-- PERSISTENT HEADER LOGO -->
+<!-- PERSISTENT SPLIT HEADER -->
     <div class="header-logo-container">
         <img src="../mi_logo.jpg" alt="Mintegrity Logo" class="company-logo">
+        <div class="course-title-header">Code of Conduct</div>
     </div>
 
     <!-- PROGRESS BAR -->
