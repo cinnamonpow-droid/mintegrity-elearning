@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AML/CTF Obligations</title>
+    <style>
+        /* Mintegrity Brand Typography & Base Styles */
+        body {
+            font-family: 'Brandon Grotesque', Corbel, sans-serif;
+            background-color: #E9E9EA; /* Mintegrity Light Grey */
+            color: #001522; /* Mintegrity Black */
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        #app-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        /* Heading Styles */
+        h1, h2 { 
+            color: #000F9F; /* Mintegrity Blue */
+            font-weight: 300; 
+            letter-spacing: 0.1em; 
+        }
+        h3 { 
+            color: #001522; /* Mintegrity Black */
+            font-weight: 500; 
+            text-transform: uppercase; 
+            margin-top: 20px;
+        }
+        
+        /* Split Header Layout & Safe Area */
+        .header-logo-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #CCCCCC;
+            flex-wrap: wrap; 
+        }
+        .company-logo {
+            max-height: 50px;
+            padding: 12px; 
+            max-width: 100%;
+        }
+        .course-title-header {
+            font-size: 16px;
+            color: #000F9F; 
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding-right: 15px;
+        }
+
+        /* Tooltip Styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 2px dotted #000F9F;
+            color: #000F9F;
+            font-weight: bold;
+            cursor: help;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 280px;
+            background-color: #001522;
+            color: #E9E9EA;
+            text-align: left;
+            border-radius: 6px;
+            padding: 12px;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -140px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            font-weight: normal;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            line-height: 1.4;
+            text-transform: none;
+            font-family: 'Brandon Grotesque', Corbel, sans-serif;
+        }
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #001522 transparent transparent transparent;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Fade-In Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: #CCCCCC; 
+            border-radius: 6px;
+            margin-bottom: 30px;
+            display: none;
+            height: 8px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #000F9F; 
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        button {
+            background-color: #000F9F; 
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-family: 'Brandon Grotesque', Corbel, sans-serif;
+            letter-spacing: 0.05em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #78A2C3; 
+            color: #001522; 
+            transform: translateY(-2px);
+        }
+        button.back-btn {
+            background-color: #CCCCCC; 
+            color: #001522; 
+        }
+        button.back-btn:hover {
+            background-color: #91C2DD; 
+        }
+
+        /* Tabs */
+        .tab-header {
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #CCCCCC;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #001522;
+            font-weight: 500;
+            margin-top: 0;
+            border-radius: 0;
+        }
+        .tab-button:hover { 
+            background: none; 
+            color: #78A2C3; 
+            transform: none; 
+        }
+        .tab-button.active {
+            color: #000F9F;
+            border-bottom: 3px solid #000F9F;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: #E9E9EA;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #CCCCCC;
+            border-top: none;
+        }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+
+        /* Accordion */
+        .accordion {
+            background-color: #CCCCCC; 
+            color: #001522;
+            cursor: pointer;
+            padding: 15px 20px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: 0.3s;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .accordion:after { content: '\002B'; font-size: 20px; color: #000F9F; }
+        .accordion.active:after { content: "\2212"; }
+        .accordion.active, .accordion:hover { background-color: #91C2DD; }
+        .panel {
+            padding: 0 20px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            border-left: 3px solid #000F9F;
+            margin-bottom: 10px;
+            border-radius: 0 0 6px 0;
+        }
+        .panel p, .panel ul, .panel ol { margin: 15px 0; }
+
+        /* Flashcards */
+        .instruction-text {
+            font-size: 0.9em;
+            color: #78A2C3;
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .flashcard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .flashcard {
+            background-color: transparent;
+            width: 100%;
+            height: 280px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 8px;
+        }
+        .flashcard-front { 
+            background-color: #000F9F;
+            color: white; 
+            font-weight: 500; 
+            font-size: 1.1em; 
+        }
+        .flashcard-back { 
+            background-color: #E9E9EA; 
+            color: #001522; 
+            transform: rotateY(180deg); 
+            font-size: 0.95em; 
+            border: 2px solid #000F9F; 
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        /* Quiz Styles */
+        .quiz-option {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background: #CCCCCC; 
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .quiz-option:hover { background: #91C2DD; }
+        .quiz-option input { margin-right: 10px; }
+        .feedback { margin-top: 15px; padding: 15px; border-radius: 6px; display: none; font-weight: 500; }
+        .feedback.correct { background-color: #d4edda; color: #155724; display: block; border-left: 4px solid #28a745; }
+        .feedback.incorrect { background-color: #f8d7da; color: #721c24; display: block; border-left: 4px solid #dc3545; }
+        
+        .footer-notes { font-size: 12px; margin-top: 40px; color: #001522; border-top: 1px solid #CCCCCC; padding-top: 15px; }
+        .callout-box { background: #E9E9EA; border-left: 4px solid #000F9F; padding: 15px; margin: 15px 0; border-radius: 0 6px 6px 0; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    
+    <!-- PERSISTENT SPLIT HEADER -->
+    <div class="header-logo-container">
+        <img src="../mi_logo.jpg" alt="Mintegrity Logo" class="company-logo">
+        <div class="course-title-header">AML/CTF Obligations</div>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-container" id="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- LAUNCH PAGE -->
+    <div id="screen-launch" class="screen active fade-in">
+        <h1 class="fade-in">AML/CTF Obligations</h1>
+        
+        <p class="fade-in">This learning material provides a comprehensive guide to the core obligations finance professionals and <span class="tooltip">AFS Licensees<span class="tooltiptext">An Australian Financial Services Licensee.</span></span> must adhere to under Australia's anti-money laundering and counter-terrorism financing (<span class="tooltip">AML/CTF<span class="tooltiptext">Anti-Money Laundering and Counter-Terrorism Financing.</span></span>) regime. It covers the fundamental requirements of the Anti-Money Laundering and Counter-Terrorism Financing Act 2006 (<span class="tooltip">AML/CTF Act<span class="tooltiptext">The Anti-Money Laundering and Counter-Terrorism Financing Act 2006 and its associated Rules.</span></span>) incorporating the significant reforms introduced by the Anti-Money Laundering and Counter-Terrorism Financing Amendment Act 2024.</p>
+        
+        <p class="fade-in">It includes how to identify, mitigate, and manage money laundering, terrorism financing, and proliferation financing (ML/TF/PF) risks through a practical, risk-based approach, ensuring you can implement compliant policies and procedures within your organisation.</p>
+
+        <h3 class="fade-in">Learning Objectives</h3>
+        <p class="fade-in">By the end of completing this reading material, you will be able to understand:</p>
+        <ul class="fade-in">
+            <li>The core AML/CTF obligations for AFS licensees and other finance professionals.</li>
+            <li>Key reporting obligations to <span class="tooltip">AUSTRAC<span class="tooltiptext">The Australian Transaction Reports and Analysis Centre, Australia's financial intelligence unit and AML/CTF regulator.</span></span>, including suspicious matters and threshold transactions.</li>
+            <li>The mandatory record-keeping requirements and their specified retention periods.</li>
+            <li>How to apply a risk-based approach to prevent financial crime effectively.</li>
+            <li>The significant legal and financial consequences of misconduct and non-compliance.</li>
+        </ul>
+
+        <p class="fade-in"><strong>CPD Allocation:</strong> You may be able to claim a CPD hour or part thereof for the completion of this course. Consult your CPD Compliance Plan, Compliance Manager, or ASIC's CPD Requirements for Financial Advisers.</p>
+
+        <button class="fade-in" onclick="nextScreen('screen-mod1')">LAUNCH COURSE</button>
+
+        <div class="footer-notes fade-in">
+            <p><strong>Copyright:</strong> Copyright © MIntegrity. All rights reserved. No part of this learning material may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the publisher.</p>
+            <p><strong>Disclaimer:</strong> This e-learning content should be used as a guide only and is not meant to replace any specific advice from your employer. Please be sure to take specialist advice if you are in doubt. MIntegrity disclaims all liability in respect of anything done in reliance on this content.</p>
+        </div>
+    </div>
+
+    <!-- MODULE 1 -->
+    <div id="screen-mod1" class="screen">
+        <h2 class="fade-in">MODULE 1: Introduction to AML/CTF Obligations</h2>
+        
+        <h3 class="fade-in">Why AML/CTF Regulation Matters</h3>
+        <p class="fade-in"><span class="tooltip">Money Laundering<span class="tooltiptext">The process of concealing the illicit origins of money or assets obtained from criminal activities (placement, layering, integration).</span></span> (ML), <span class="tooltip">Financing of Terrorism<span class="tooltiptext">Providing or collecting funds with the intention or knowledge that they will be used to carry out a terrorist act.</span></span> (TF), and <span class="tooltip">Proliferation Financing<span class="tooltiptext">Providing funds or financial services for nuclear, chemical or biological weapons.</span></span> (PF) are serious crimes with devastating consequences. They enable organised crime, corruption, and terrorism, undermining the safety of our communities and the stability of our financial system. We all have crucial roles in preventing services from being misused for criminal purposes. Compliance is not just a legal requirement; it's an ethical imperative.</p>
+        
+        <div class="fade-in">
+            <div class="tab-header">
+                <button class="tab-button active" onclick="openTab(event, 'tab-framework')">Legislative Framework</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-regulators')">Key Regulators</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-entities')">Reporting Entities</button>
+            </div>
+            
+            <div id="tab-framework" class="tab-content active">
+                <strong>The Legislative Framework</strong><br>
+                The primary legal instrument governing AML/CTF in Australia is the <strong>Anti-Money Laundering and Counter-Terrorism Financing Act 2006 (AML/CTF Act)</strong>. It is accompanied by the Anti-Money Laundering and Counter-Terrorism Financing Rules 2025, which provide detailed, practical requirements.<br><br>
+                In 2024, the Anti-Money Laundering and Counter-Terrorism Financing Amendment Act 2024 introduced the most significant reforms to the regime in over a decade, modernising the framework to be more risk-focused and aligned with international standards.<br><br>
+                <strong>The Objects of the Act are to:</strong>
+                <ul>
+                    <li>Detect, deter, and disrupt ML/TF/PF and other serious financial crimes.</li>
+                    <li>Provide Australian government bodies and international counterparts with necessary information.</li>
+                    <li>Support cooperation between reporting entities and government agencies.</li>
+                    <li>Promote public confidence in the Australian financial system.</li>
+                    <li>Fulfil Australia's international obligations.</li>
+                </ul>
+            </div>
+            
+            <div id="tab-regulators" class="tab-content">
+                <strong>Key Regulators</strong><br><br>
+                <strong>AUSTRAC (Australian Transaction Reports and Analysis Centre):</strong> AUSTRAC is Australia's financial intelligence unit and the primary AML/CTF regulator. Its functions include collecting and analysing financial intelligence, disseminating it to law enforcement, and monitoring the compliance of reporting entities.<br><br>
+                <strong>ASIC (Australian Securities and Investments Commission):</strong> While AUSTRAC is the lead regulator, ASIC also has a role, particularly concerning how AFS licensees manage ML/TF/PF risks as part of their general obligations under the Corporations Act 2001. ASIC can take action if a licensee fails to manage these risks adequately.
+            </div>
+            
+            <div id="tab-entities" class="tab-content">
+                <strong>Who Has Obligations? Reporting Entities & Designated Services</strong><br>
+                Your obligations under the AML/CTF Act are triggered if you are a <strong>'reporting entity'</strong>. A reporting entity is any individual or organisation that provides a <strong>'designated service'</strong>.<br><br>
+                <strong>Designated Services:</strong> These are specific financial, bullion, and gambling services listed in section 6 of the AML/CTF Act. For finance professionals, this list is extensive and includes:
+                <ul>
+                    <li>Opening an account</li>
+                    <li>Making a loan</li>
+                    <li>Issuing or selling a security or derivative</li>
+                    <li>Acquiring or disposing of a security or derivative as an agent</li>
+                    <li>Providing a custodial or depository service</li>
+                    <li>Arranging for a person to receive a designated service</li>
+                </ul>
+                <div class="callout-box">
+                    <strong>Example:</strong> If you are an AFS licensee who operates a managed investment scheme, the act of issuing an interest in that scheme to an investor is a designated service. This makes your company a reporting entity with full obligations under the Act.
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-launch')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod2')">Next: The Risk-Based Approach</button>
+        </div>
+    </div>
+
+    <!-- MODULE 2 -->
+    <div id="screen-mod2" class="screen">
+        <h2 class="fade-in">MODULE 2: The Risk-Based Approach</h2>
+        
+        <h3 class="fade-in">The Core Principle</h3>
+        <p class="fade-in">The AML/CTF regime is not a one-size-fits-all set of rules. It is built on a <span class="tooltip">Risk-Based Approach<span class="tooltiptext">The principle that reporting entities should identify, assess, and understand their specific ML/TF risks and apply proportionate measures.</span></span>. This means you must identify, assess, and understand the specific money laundering and terrorism financing risks your business faces and apply your AML/CTF resources to manage and mitigate those risks effectively. High-risk areas require stronger controls, while low-risk areas may warrant simplified measures.</p>
+        
+        <h3 class="fade-in">Identifying and Assessing ML/TF/PF Risk</h3>
+        <p class="fade-in">Your AML/CTF Program must be based on a thorough assessment of your specific ML/TF/PF risks. According to AUSTRAC guidance and the AML/CTF Rules, you must consider four primary risk pillars:</p>
+
+        <div class="instruction-text fade-in">Tap cards to explore the 4 risk pillars ↺</div>
+        <div class="flashcard-grid fade-in">
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">1. Customer Types</div>
+                    <div class="flashcard-back">Consider individuals, companies, trusts, and associations. Are any of them <span class="tooltip">PEPs<span class="tooltiptext">Politically Exposed Persons: Individuals holding prominent public positions.</span></span> or from high-risk jurisdictions? Do you know the ultimate <span class="tooltip">Beneficial Owners<span class="tooltiptext">Individuals who ultimately own or control 25% or more of a customer.</span></span>?</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">2. Services & Products</div>
+                    <div class="flashcard-back">What designated services do you offer? Some products, like those that allow for high levels of anonymity or rapid, high-volume international transactions, naturally carry significantly higher inherent risks.</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">3. Delivery Channels</div>
+                    <div class="flashcard-back">How do you interact with customers? Non-face-to-face delivery (e.g., fully online onboarding and transactions) presents higher risks than in-person services because identity verification is more challenging.</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="toggleCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">4. Foreign Jurisdictions</div>
+                    <div class="flashcard-back">Do you deal with customers or funds from other countries? Jurisdictions known for high levels of corruption, weaker AML/CTF laws, or state-sponsorship of terrorism pose a greater financial crime risk.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout-box fade-in">
+            <strong>Dynamic Assessment Commentary:</strong> A risk assessment is not a one-time event. It must be a dynamic process. You should review and update your ML/TF/PF risk assessment regularly, especially when there are changes to your business, such as the introduction of new products, expansion into new markets, or changes in your customer base.
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod1')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod3')">Next: Developing an AML/CTF Program</button>
+        </div>
+    </div>
+
+    <!-- MODULE 3 -->
+    <div id="screen-mod3" class="screen">
+        <h2 class="fade-in">MODULE 3: Developing & Implementing an AML/CTF Program</h2>
+        <p class="fade-in"><em>Note: The following expanded framework changes come into effect on 31 March 2026.</em></p>
+        
+        <h3 class="fade-in">A Modern, Risk-Based Requirement</h3>
+        <p class="fade-in">Under the AML/CTF Act, a reporting entity must adopt and maintain an AML/CTF Program. This program is the cornerstone of your compliance framework. The 2024 reforms shifted the focus from a rigid, compliance-based structure to a more flexible, outcomes-oriented approach tailored to your business risks. The previous mandatory separation into Part A (general risk) and Part B (customer identification) is no longer required.</p>
+
+        <p class="fade-in">Your AML/CTF Program must be approved by your board and senior management and include documented policies, procedures, and controls across the key areas below:</p>
+        
+        <div class="fade-in">
+            <button class="accordion">ML/TF/PF Risk Assessment Requirements</button>
+            <div class="panel">
+                <p>The foundation of your program, where you identify and assess specific risks, now explicitly including proliferation financing.</p>
+                <ul>
+                    <li><strong>Document Your Methodology:</strong> Create a formal document outlining how you identify, assess, manage, and mitigate risks.</li>
+                    <li><strong>Assess Key Risk Factors:</strong> Must evaluate customer types, designated services, delivery channels, and geographic exposure.</li>
+                    <li><strong>Review and Update:</strong> Must review at least once every 3 years, as well as upon triggers like launching new products, receiving new risk info from AUSTRAC, or identifying weaknesses during independent reviews.</li>
+                    <li><strong>Get Approval:</strong> The assessment and updates must be formally approved by a designated senior manager.</li>
+                </ul>
+            </div>
+
+            <button class="accordion">Controls, Governance & Compliance Officer</button>
+            <div class="panel">
+                <ul>
+                    <li><strong>Appoint a Compliance Officer:</strong> Must designate an AML/CTF Compliance Officer employed at a management level, who is a 'fit and proper person', a resident of Australia, and given sufficient authority and resources.</li>
+                    <li><strong>Governing Body Oversight:</strong> The board or equivalent body has ultimate responsibility. They must exercise ongoing oversight, making compliance a standing agenda item.</li>
+                    <li><strong>Senior Management Approval:</strong> Designated senior managers must formally approve the risk assessment and all AML/CTF policies.</li>
+                </ul>
+            </div>
+
+            <button class="accordion">Employee Due Diligence & Screening</button>
+            <div class="panel">
+                <p>Implement procedures for screening new and existing employees to ensure suitability for their roles.</p>
+                <ul>
+                    <li><strong>Risk-Based Screening:</strong> Apply more rigorous screening for higher-risk roles (e.g., Compliance Officer, senior management, client-facing staff).</li>
+                    <li><strong>Screening Methods:</strong> Conduct police background checks, verify qualifications and employment history, and perform reference checks.</li>
+                    <li><strong>Ongoing Checks:</strong> Re-screen staff when they are promoted or transfer into higher-risk roles.</li>
+                </ul>
+            </div>
+
+            <button class="accordion">AML/CTF Risk Awareness Training</button>
+            <div class="panel">
+                <ul>
+                    <li><strong>Tailored Content:</strong> Generic training is not sufficient; content must align with specific employee roles and responsibilities.</li>
+                    <li><strong>Initial & Ongoing:</strong> Deliver training during induction and regular refresher courses thereafter.</li>
+                    <li><strong>Coverage:</strong> Must cover relevant ML/TF/PF risks, statutory obligations, internal suspicious reporting procedures, and the offence of "tipping off".</li>
+                    <li><strong>Record Keeping:</strong> Retain detailed attendance logs, dates, and topics covered.</li>
+                </ul>
+            </div>
+
+            <button class="accordion">Suspicious Matter Escalation & Reporting</button>
+            <div class="panel">
+                <ul>
+                    <li><strong>Clear Escalation Channels:</strong> Staff must report suspicious activity internally to the Compliance Officer (never directly to AUSTRAC).</li>
+                    <li><strong>Know Your Timelines:</strong> Submit an SMR to AUSTRAC within <strong>24 hours</strong> for terrorism financing, or <strong>3 business days</strong> for all other suspicious matters.</li>
+                    <li><strong>Tipping Off Safeguards:</strong> Prevent staff from disclosing that an SMR has been or will be filed.</li>
+                </ul>
+            </div>
+
+            <button class="accordion">Independent Review & Reporting Groups</button>
+            <div class="panel">
+                <p><strong>Independent Review:</strong> Must be conducted at least once every 3 years by an independent reviewer (internal audit, external law firm, or specialist consultant) who was not involved in developing the program. Written findings must be submitted to the board.</p>
+                <p><strong>Reporting Groups:</strong> Replaces 'designated business groups'. Allows related entities to adopt a single group AML/CTF program managed by an appointed Australian-incorporated 'lead entity'.</p>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod2')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod3-quiz1')">Next: Knowledge Checks</button>
+        </div>
+    </div>
+
+    <!-- MODULE 3 KNOWLEDGE CHECKS -->
+    <div id="screen-mod3-quiz1" class="screen">
+        <h2 class="fade-in">Knowledge Check 1</h2>
+        <p class="fade-in">Under the 2024 reforms, what is the main principle for structuring an AML/CTF Program?</p>
+        <div id="mod3q1-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod3q1" value="A"> The program must be strictly separated into Part A (risk management) and Part B (customer identification).</label>
+            <label class="quiz-option"><input type="radio" name="mod3q1" value="B"> The program can be organised flexibly to suit the business's needs, provided it covers all required components like risk assessment, CDD, and governance.</label>
+            <label class="quiz-option"><input type="radio" name="mod3q1" value="C"> The program is no longer required if the business appoints an AML/CTF Compliance Officer.</label>
+            <label class="quiz-option"><input type="radio" name="mod3q1" value="D"> The program structure must be pre-approved by AUSTRAC before it can be implemented.</label>
+        </div>
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod3')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod3q1', 'B', 'Correct! The mandatory separation into Part A and B has been removed in favour of a flexible, outcomes-oriented approach tailored to business risks.', 'Incorrect. Please try again.', 'screen-mod3-quiz2')">Submit</button>
+        </div>
+        <div id="mod3q1-feedback" class="feedback"></div>
+    </div>
+
+    <div id="screen-mod3-quiz2" class="screen">
+        <h2 class="fade-in">Knowledge Check 2</h2>
+        <p class="fade-in">In addition to Money Laundering (ML) and Terrorism Financing (TF), what new specific risk must reporting entities now explicitly include in their risk assessments and AML/CTF programs?</p>
+        <div id="mod3q2-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod3q2" value="A"> Insider Trading</label>
+            <label class="quiz-option"><input type="radio" name="mod3q2" value="B"> Market Manipulation</label>
+            <label class="quiz-option"><input type="radio" name="mod3q2" value="C"> Proliferation Financing (PF)</label>
+            <label class="quiz-option"><input type="radio" name="mod3q2" value="D"> Sanctions Evasion</label>
+        </div>
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod3-quiz1')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod3q2', 'C', 'Correct! Proliferation Financing (PF) must now be explicitly included in your risk assessments and AML/CTF programs.', 'Incorrect. Please try again.', 'screen-mod4')">Submit</button>
+        </div>
+        <div id="mod3q2-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 4 -->
+    <div id="screen-mod4" class="screen">
+        <h2 class="fade-in">MODULE 4: Customer Identification & Verification (KYC)</h2>
+        
+        <h3 class="fade-in">The Core Obligation (Section 32)</h3>
+        <p class="fade-in">Under Section 32 of the AML/CTF Act, you must carry out <span class="tooltip">Customer Due Diligence<span class="tooltiptext">The overall process of identifying and verifying a customer's identity, assessing risk, and monitoring relationships.</span></span> (CDD) before providing a designated service to a customer. This process, often called <span class="tooltip">Know Your Customer<span class="tooltiptext">The process of collecting and verifying information about a customer's identity and assessing their risk profile.</span></span> (KYC), is fundamental. Failing to do so is a significant breach leading to severe penalties.</p>
+        
+        <div class="fade-in">
+            <div class="tab-header">
+                <button class="tab-button active" onclick="openTab(event, 'tab-framework-cdd')">CDD Framework</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-levels-cdd')">Levels of CDD</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-bo-peps')">Beneficial Owners & PEPs</button>
+            </div>
+            
+            <div id="tab-framework-cdd" class="tab-content active">
+                <strong>Initial vs. Ongoing CDD</strong><br><br>
+                <strong>Initial CDD:</strong> Conducted at the start of a customer relationship. Involves:
+                <ul>
+                    <li>Identifying the ML/TF/PF risk profile of the customer.</li>
+                    <li>Collecting and verifying identity information (<span class="tooltip">ACIP<span class="tooltiptext">Applicable Customer Identification Procedure.</span></span>).</li>
+                    <li>Identifying and verifying any beneficial owners.</li>
+                    <li>Screening for targeted financial sanctions and Politically Exposed Persons (PEPs).</li>
+                </ul>
+                <strong>Ongoing CDD:</strong> Monitoring and managing risks throughout the relationship. Involves maintaining a transaction monitoring program to detect unusual activity and keeping customer information up to date.
+            </div>
+            
+            <div id="tab-levels-cdd" class="tab-content">
+                <strong>Levels of Customer Due Diligence</strong><br><br>
+                <strong>Simplified CDD:</strong> Applied when risk assessment determines the ML/TF/PF risk is low, and no high-risk triggers are present.<br><br>
+                <strong>Enhanced CDD (ECDD):</strong> Mandatory when ML/TF/PF risk is high (e.g., Foreign PEPs). ECDD requires:
+                <ul>
+                    <li>Obtaining senior management approval to establish/continue the relationship.</li>
+                    <li>Taking reasonable measures to establish the source of wealth and source of funds.</li>
+                    <li>Applying intensive ongoing monitoring to transactions.</li>
+                </ul>
+            </div>
+            
+            <div id="tab-bo-peps" class="tab-content">
+                <strong>Beneficial Owners & PEPs</strong><br><br>
+                <strong>Beneficial Owners:</strong> Any individual who ultimately owns or controls (directly or indirectly) 25% or more of a non-individual customer entity. You must collect and verify each beneficial owner's full name, and either their date of birth or full residential address.<br><br>
+                <strong>Politically Exposed Persons (PEPs):</strong>
+                <ul>
+                    <li><strong>Foreign PEPs:</strong> Automatically considered high-risk. Enhanced CDD is mandatory.</li>
+                    <li><strong>Domestic & International Organisation PEPs:</strong> Must assess risk. If risk is determined to be high, mandatory Enhanced CDD applies.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod3-quiz2')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod4-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <!-- MODULE 4 KNOWLEDGE CHECK -->
+    <div id="screen-mod4-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check 3</h2>
+        <p class="fade-in">The modernised Customer Due Diligence (CDD) framework is separated into two main categories. What are they?</p>
+        <div id="mod4q1-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod4q1" value="A"> Standard Diligence and Enhanced Diligence</label>
+            <label class="quiz-option"><input type="radio" name="mod4q1" value="B"> Pre-Screening and Post-Transaction Monitoring</label>
+            <label class="quiz-option"><input type="radio" name="mod4q1" value="C"> Initial CDD and Ongoing CDD</label>
+            <label class="quiz-option"><input type="radio" name="mod4q1" value="D"> Basic KYC and Advanced KYC</label>
+        </div>
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod4')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod4q1', 'C', 'Correct! The modernized framework separates CDD into Initial CDD (at relationship start) and Ongoing CDD (ongoing monitoring).', 'Incorrect. Please try again.', 'screen-mod5')">Submit</button>
+        </div>
+        <div id="mod4q1-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 5 -->
+    <div id="screen-mod5" class="screen">
+        <h2 class="fade-in">MODULE 5: Reporting Obligations</h2>
+        <p class="fade-in">Reporting financial intelligence to AUSTRAC is a cornerstone of the AML/CTF regime. Your AML/CTF program must have systems in place to ensure timely and accurate reporting.</p>
+        
+        <div class="fade-in">
+            <button class="accordion"><span class="tooltip">SMRs<span class="tooltiptext">Suspicious Matter Report</span></span></button>
+            <div class="panel">
+                <p>You must submit an SMR to AUSTRAC if you form a suspicion on reasonable grounds regarding a customer, transaction, or attempted transaction. Suspicion may relate to potential offences, tax evasion, proceeds of crime, or false identity.</p>
+                <p><strong>Reporting Timelines:</strong></p>
+                <ul>
+                    <li><strong>24 hours:</strong> If the suspicion relates to terrorism financing.</li>
+                    <li><strong>3 business days:</strong> For all other suspicious matters.</li>
+                </ul>
+            </div>
+            
+            <button class="accordion"><span class="tooltip">TTRs<span class="tooltiptext">Threshold Transaction Report</span></span></button>
+            <div class="panel">
+                <p>You must submit a TTR to AUSTRAC for every transaction you provide that involves the transfer of physical currency of AUD $10,000 or more (or the foreign currency equivalent).</p>
+                <p><strong>Timeline:</strong> This must be reported within 10 business days of the transaction. Applies strictly to physical cash, not electronic transfers of the same value.</p>
+            </div>
+            
+            <button class="accordion"><span class="tooltip">IVTS<span class="tooltiptext">International Value Transfer Service</span></span></button>
+            <div class="panel">
+                <p>Effective 31 March 2026, the old IFTI reports are replaced by IVTS reports. The new framework is broader and covers instructions to transfer money, virtual assets, or other property into or out of Australia.</p>
+                <p><strong>Timeline:</strong> Reports must be submitted within 10 business days. This includes a new requirement to report transfer activity to or from unverified self-hosted virtual asset wallets.</p>
+            </div>
+        </div>
+
+        <div class="callout-box fade-in">
+            <strong>"Tipping Off" Offence & Harm Prevention:</strong> It is a serious criminal offence to disclose that an SMR has been or will be submitted. Effective 31 March 2025, the law focuses on a "harm prevention approach." The key test is whether disclosing information would or could reasonably be expected to prejudice an investigation.
+        </div>
+
+        <div class="callout-box fade-in">
+            <strong>Structuring Scenario Example:</strong> A customer arranging a large investment insists on depositing funds through a series of structured cash payments just below the $10,000 threshold across multiple bank branches. This structuring is a classic red flag for money laundering and warrants an SMR.
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod4-quiz')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod5-quiz1')">Next: Knowledge Checks</button>
+        </div>
+    </div>
+
+    <!-- MODULE 5 KNOWLEDGE CHECKS -->
+    <div id="screen-mod5-quiz1" class="screen">
+        <h2 class="fade-in">Knowledge Check 4</h2>
+        <p class="fade-in">The reporting requirement for international transfers of funds has been updated. What new report replaces the former International Funds Transfer Instruction (IFTI) report?</p>
+        <div id="mod5q1-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod5q1" value="A"> A Cross-Border Transaction Report (CBTR)</label>
+            <label class="quiz-option"><input type="radio" name="mod5q1" value="B"> An International Value Transfer Service (IVTS) Report</label>
+            <label class="quiz-option"><input type="radio" name="mod5q1" value="C"> An Overseas Transaction Report (OTR)</label>
+            <label class="quiz-option"><input type="radio" name="mod5q1" value="D"> A Foreign Currency Transaction Report (FCTR)</label>
+        </div>
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod5')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod5q1', 'B', 'Correct! The International Value Transfer Service (IVTS) Report replaces the former IFTI report, broadening coverage to money, virtual assets, and other property.', 'Incorrect. Please try again.', 'screen-mod5-quiz2')">Submit</button>
+        </div>
+        <div id="mod5q1-feedback" class="feedback"></div>
+    </div>
+
+    <div id="screen-mod5-quiz2" class="screen">
+        <h2 class="fade-in">Knowledge Check 5</h2>
+        <p class="fade-in">What is the key test for the "tipping off" offence following the 2024 reforms?</p>
+        <div id="mod5q2-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod5q2" value="A"> Whether the customer was informed of an SMR, regardless of the outcome.</label>
+            <label class="quiz-option"><input type="radio" name="mod5q2" value="B"> Whether the disclosure would or could reasonably be expected to prejudice an investigation.</label>
+            <label class="quiz-option"><input type="radio" name="mod5q2" value="C"> Whether the disclosure was made to any person outside the organisation.</label>
+            <label class="quiz-option"><input type="radio" name="mod5q2" value="D"> Whether senior management approved the disclosure before it was made.</label>
+        </div>
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod5-quiz1')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod5q2', 'B', 'Correct! Following reforms, the law focuses on harm prevention: whether disclosure would or could reasonably be expected to prejudice an investigation.', 'Incorrect. Please try again.', 'screen-mod6')">Submit</button>
+        </div>
+        <div id="mod5q2-feedback" class="feedback"></div>
+    </div>
+
+    <!-- MODULE 6 -->
+    <div id="screen-mod6" class="screen">
+        <h2 class="fade-in">MODULE 6: Record-Keeping Requirements</h2>
+        
+        <h3 class="fade-in">Part 10 of the AML/CTF Act</h3>
+        <p class="fade-in">Robust record-keeping is essential for demonstrating compliance and assisting law enforcement investigations. You must retain records for a period of <strong>seven (7) years</strong> after the transaction is completed or the business relationship ends.</p>
+        
+        <div class="fade-in">
+            <button class="accordion">Mandatory Records to Retain for 7 Years</button>
+            <div class="panel">
+                <ul>
+                    <li><strong>Customer Due Diligence:</strong> Records of all CDD carried out for each customer.</li>
+                    <li><strong>Transactions:</strong> Records of all designated service transactions provided to customers.</li>
+                    <li><strong>AML/CTF Program:</strong> Copy of your program and any variations made to it.</li>
+                    <li><strong>Risk Assessments:</strong> Records of all ML/TF/PF risk assessments.</li>
+                    <li><strong>Reports:</strong> Copies of all SMRs, TTRs, and IVTS reports submitted to AUSTRAC.</li>
+                    <li><strong>Internal Governance:</strong> Records related to employee due diligence, training attendance, and independent review reports.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="callout-box fade-in">
+            <strong>Accessibility Requirement:</strong> Records must be kept in a way that allows them to be retrieved and provided to AUSTRAC or law enforcement promptly upon request. This means having an organised and accessible filing system, whether physical or digital.
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod5-quiz2')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod7')">Next: Consequences</button>
+        </div>
+    </div>
+
+    <!-- MODULE 7 -->
+    <div id="screen-mod7" class="screen">
+        <h2 class="fade-in">MODULE 7: Consequences of Misconduct</h2>
+        
+        <p class="fade-in">Non-compliance with the AML/CTF Act can lead to severe penalties for both individuals and organisations. AUSTRAC has a range of enforcement powers under Part 15 of the Act.</p>
+
+        <div class="fade-in">
+            <button class="accordion">Civil Penalties & Infringement Notices</button>
+            <div class="panel">
+                <p>AUSTRAC can apply to the Federal Court for civil penalty orders for significant contraventions:</p>
+                <ul>
+                    <li><strong>Maximum Penalty for Body Corporate:</strong> Up to 100,000 penalty units.</li>
+                    <li><strong>Maximum Penalty for Individual:</strong> Up to 20,000 penalty units.</li>
+                </ul>
+                <p><em>(With penalty units indexed over $300, maximum corporate fines run into tens of millions of dollars).</em></p>
+                <p>For less serious contraventions, AUSTRAC can issue <strong>Infringement Notices</strong> (60 penalty units per corporate breach; 12 per individual breach).</p>
+            </div>
+
+            <button class="accordion">Other Enforcement Actions</button>
+            <div class="panel">
+                <ul>
+                    <li><strong>Remedial Directions:</strong> Directing reporting entities to take specific corrective actions or appoint external auditors to ensure future compliance.</li>
+                    <li><strong>Enforceable Undertakings:</strong> Binding written undertakings that a reporting entity will take specified action to comply. Breaching this can lead to court orders.</li>
+                    <li><strong>Criminal Prosecution:</strong> Serious, wilful breaches (such as the "tipping off" offence) carry criminal charges and imprisonment for up to 2 years.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod6')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod8')">Next: Case Studies</button>
+        </div>
+    </div>
+
+    <!-- MODULE 8 -->
+    <div id="screen-mod8" class="screen">
+        <h2 class="fade-in">MODULE 8: Case Studies in Misconduct</h2>
+        <p class="fade-in">Examining real-world regulatory actions highlights the critical importance of maintaining proactive AML/CTF controls.</p>
+        
+        <div class="fade-in">
+            <div class="tab-header">
+                <button class="tab-button active" onclick="openTab(event, 'tab-cba')">Case Study 1: CBA</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-crown')">Case Study 2: Crown</button>
+            </div>
+            
+            <div id="tab-cba" class="tab-content active">
+                <strong>Commonwealth Bank of Australia (CBA) - $700 Million Penalty</strong><br><br>
+                <strong>The Breaches:</strong> In 2017, AUSTRAC launched civil proceedings for systemic failures:
+                <ul>
+                    <li>Failure to report over 53,500 threshold transactions made through Intelligent Deposit Machines (IDMs) allowing anonymous deposits up to $20,000.</li>
+                    <li>Failure to submit SMRs on time for accounts subject to law enforcement interest.</li>
+                    <li>Failure to conduct proper ML/TF risk assessments before rolling out IDMs.</li>
+                </ul>
+                <strong>Preventative Steps:</strong> Always conduct thorough risk assessments before launching new automated transaction technology; ensure automated monitoring is live from day one; foster board oversight.
+            </div>
+            
+            <div id="tab-crown" class="tab-content">
+                <strong>Crown Resorts - $450 Million Penalty</strong><br><br>
+                <strong>The Breaches:</strong> In 2022, AUSTRAC commenced proceedings against Crown Melbourne and Crown Perth:
+                <ul>
+                    <li>Failure to conduct due diligence on high-risk international VIP customers serviced by junket operators linked to organised crime.</li>
+                    <li>Systemic failure to report thousands of suspicious cash deposits and transfers.</li>
+                    <li>Inadequate, non-risk-based AML/CTF program lacking proper governance and compliance culture.</li>
+                </ul>
+                <strong>Preventative Steps:</strong> Conduct strict due diligence on third-party intermediaries; empower compliance teams; act on red flags immediately regardless of commercial revenue impacts.
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod7')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod9')">Next: Tranche 2 Reforms</button>
+        </div>
+    </div>
+
+    <!-- MODULE 9 -->
+    <div id="screen-mod9" class="screen">
+        <h2 class="fade-in">MODULE 9: Tranche 2 Reforms & Summary</h2>
+        
+        <h3 class="fade-in">The Next Phase of Reform (Tranche 2)</h3>
+        <p class="fade-in">Australia is expanding its AML/CTF regime to align with global Financial Action Task Force (FATF) standards, closing gaps regarding 'gatekeeper' professions to the financial system. Legislated under the 2024 Amendment Act, key implementation windows occur between <strong>31 March 2025 and 1 July 2026</strong>.</p>
+        
+        <div class="fade-in">
+            <button class="accordion">Who Will Tranche 2 Affect?</button>
+            <div class="panel">
+                <p>Extends full AML/CTF obligations to new reporting entities:</p>
+                <ul>
+                    <li><strong>Lawyers & Notaries:</strong> When managing client money, creating trusts, or executing real estate/business deals.</li>
+                    <li><strong>Accountants:</strong> When providing company formation or financial transaction services.</li>
+                    <li><strong>Trust & Company Service Providers:</strong> Acting as or arranging company directors/secretaries.</li>
+                    <li><strong>Real Estate Agents:</strong> Involved in buying or selling real property.</li>
+                    <li><strong>Dealers in Precious Metals & Stones:</strong> Engaging in high-value transactions.</li>
+                </ul>
+            </div>
+
+            <button class="accordion">Other Legislative Changes & Core Summary</button>
+            <div class="panel">
+                <ul>
+                    <li><strong>Bearer Negotiable Instruments (BNIs):</strong> Definition narrowed (effective 1 July 2026) to reduce unnecessary reporting burdens.</li>
+                    <li><strong>Legal Professional Privilege:</strong> Clearer disclosure processes established (effective 1 July 2026).</li>
+                    <li><strong>Repeal of FTRA 1988:</strong> Older legislation repealed effective 7 January 2025.</li>
+                </ul>
+                <p><strong>Core Takeaway:</strong> Develop a flexible program, adopt a risk-based approach, perform Initial & Ongoing CDD, identify Beneficial Owners (>25%), screen PEPs, submit SMRs/TTRs/IVTS reports on time, avoid tipping off, and retain records for 7 years.</p>
+            </div>
+        </div>
+        
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod8')">&larr; Back</button>
+            <button onclick="nextScreen('screen-mod9-quiz')">Next: Knowledge Check</button>
+        </div>
+    </div>
+
+    <!-- MODULE 9 KNOWLEDGE CHECK -->
+    <div id="screen-mod9-quiz" class="screen">
+        <h2 class="fade-in">Knowledge Check 6</h2>
+        <p class="fade-in">True or False: Under the Tranche 2 reforms, the AML/CTF regime is expanding to cover lawyers, accountants, and IT consultants.</p>
+        <div id="mod9q1-options" class="fade-in">
+            <label class="quiz-option"><input type="radio" name="mod9q1" value="True"> True</label>
+            <label class="quiz-option"><input type="radio" name="mod9q1" value="False"> False</label>
+        </div>
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="nextScreen('screen-mod9')">&larr; Back</button>
+            <button onclick="checkModAnswer('mod9q1', 'False', 'Correct! False. While the regime expands to lawyers, accountants, real estate agents, and precious metal dealers, IT consultants are NOT part of the specified gatekeeper professions.', 'Incorrect. Please try again.', 'screen-complete')">Submit</button>
+        </div>
+        <div id="mod9q1-feedback" class="feedback"></div>
+    </div>
+
+    <!-- COURSE COMPLETE SCREEN -->
+    <div id="screen-complete" class="screen">
+        <h2 class="fade-in">Congratulations!</h2>
+        <p class="fade-in">You have now completed all modules of the AML/CTF Obligations Learning material.</p>
+        <p class="fade-in">You can now continue to complete the accompanying quiz in Caddie to earn CPD points for this course.</p>
+
+        <div class="button-group fade-in">
+            <button class="back-btn" onclick="location.reload()">Return to Start</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Tab Functionality
+    function openTab(evt, tabName) {
+        let i, tabcontent, tablinks;
+        tabcontent = evt.currentTarget.parentElement.parentElement.querySelectorAll(".tab-content");
+        for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+        tablinks = evt.currentTarget.parentElement.querySelectorAll(".tab-button");
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Accordion Functionality
+    var acc = document.getElementsByClassName("accordion");
+    for (let i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            } 
+        });
+    }
+
+    // Intersection Observer for Fade-Ins
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    function triggerAnimations() {
+        document.querySelectorAll('.fade-in').forEach((el) => {
+            el.classList.remove('visible'); 
+            observer.observe(el);
+            setTimeout(() => {
+                const rect = el.getBoundingClientRect();
+                if(rect.top < window.innerHeight) el.classList.add('visible');
+            }, 100);
+        });
+    }
+
+    // Flashcard Toggle
+    function toggleCard(element) {
+        element.classList.toggle('flipped');
+    }
+
+    // Progress and Screen Navigation Array
+    const screens = [
+        'screen-launch', 'screen-mod1', 'screen-mod2', 'screen-mod3', 'screen-mod3-quiz1', 'screen-mod3-quiz2', 
+        'screen-mod4', 'screen-mod4-quiz', 'screen-mod5', 'screen-mod5-quiz1', 'screen-mod5-quiz2', 
+        'screen-mod6', 'screen-mod7', 'screen-mod8', 'screen-mod9', 'screen-mod9-quiz', 'screen-complete'
+    ];
+
+    function updateProgress(screenId) {
+        if(screenId === 'screen-launch') {
+            document.getElementById('progress-container').style.display = 'none';
+        } else {
+            document.getElementById('progress-container').style.display = 'block';
+            const index = screens.indexOf(screenId);
+            const percentage = Math.max(5, (index / (screens.length - 1)) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+        }
+    }
+
+    function nextScreen(nextId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(nextId).classList.add('active');
+        updateProgress(nextId);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        triggerAnimations();
+    }
+
+    function checkModAnswer(modId, correctAnswer, correctText, incorrectText, nextId) {
+        const selected = document.querySelector(`input[name="${modId}"]:checked`);
+        const feedbackDiv = document.getElementById(`${modId}-feedback`);
+        
+        if (!selected) { alert("Please select an answer."); return; }
+
+        if (selected.value === correctAnswer) {
+            feedbackDiv.innerHTML = correctText;
+            feedbackDiv.className = "feedback correct fade-in visible";
+            setTimeout(() => {
+                feedbackDiv.style.display = 'none';
+                selected.checked = false;
+                nextScreen(nextId);
+            }, 2500);
+        } else {
+            feedbackDiv.innerHTML = incorrectText;
+            feedbackDiv.className = "feedback incorrect fade-in visible";
+        }
+    }
+
+    // Initialize animations
+    triggerAnimations();
+</script>
+
+</body>
+</html>
